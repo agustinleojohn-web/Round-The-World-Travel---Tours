@@ -4,7 +4,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://roundtheworld.free.nf/sitemap.xml
+Sitemap: https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/sitemap.xml
 
 # Crawl-delay (optional, helps prevent server overload)
 Crawl-delay: 10
