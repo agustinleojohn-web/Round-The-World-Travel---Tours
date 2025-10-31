@@ -2107,12 +2107,42 @@ background: linear-gradient(0deg, rgba(255, 239, 201, 1) 0%, rgba(253, 225, 160,
         gap: 8px;
     }
 }
+/* ========== HERO ========== */
 .hero-image {
+  /* Full height for the hero section */
+  min-height: 100vh;
   background-image: url("img/Hero/background.jpeg");
-  height: 50%;
-  background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+  /* Remove fixed attachment for better mobile compatibility */
+  background-attachment: scroll;
+}
+
+/* Ensure the hero content is properly positioned */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Overlay for better text readability */
+.hero-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  z-index: 1;
+}
+
+/* Content should be above the overlay */
+#hero > .max-w-7xl {
+  position: relative;
+  z-index: 2;
 }
