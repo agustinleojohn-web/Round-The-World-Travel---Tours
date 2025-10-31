@@ -2111,7 +2111,7 @@ background: linear-gradient(0deg, rgba(255, 239, 201, 1) 0%, rgba(253, 225, 160,
 .hero-image {
   /* Full height for the hero section */
   min-height: 100vh;
-  background-image: url("/img/Hero/background.jpeg");
+  background-image: url("../img/Hero/background.jpeg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
