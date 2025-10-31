@@ -1,0 +1,14 @@
+# robots.txt for Round-The-World Travel & Tours
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://roundtheworld.free.nf/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 10
+
+# Disallow certain files/directories (if needed in future)
+# Disallow: /admin/
+# Disallow: /private/

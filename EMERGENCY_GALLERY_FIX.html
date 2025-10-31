@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Gallery Fix - Diagnostic Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-red-600">🚨 Emergency Gallery Diagnostic & Fix</h1>
+        
+        <div class="mb-6">
+            <button onclick="runDiagnostics()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold">
+                🔍 Run Full Diagnostics
+            </button>
+            
+            <button onclick="forceGalleryFix()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold ml-4">
+                🔧 Force Gallery Fix
+            </button>
+            
+            <button onclick="clearEverything()" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold ml-4">
+                🗑️ Clear Cache & Reload
+            </button>
+        </div>
+        
+        <div id="output" class="bg-gray-900 text-green-400 p-6 rounded-lg font-mono text-sm overflow-auto" style="max-height: 600px;">
+            <div class="text-yellow-400">Click "Run Full Diagnostics" to start...</div>
+        </div>
+        
+        <div id="preview" class="mt-6"></div>
+    </div>
+
+    <script>
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyky7Er1lNJzuI1UrXsrKseaYsrcR46RU7qHBCPiVE6EJomp6XVC-CIrjZxSPEqv4lh_w/exec';
+        
+        function log(message, color = 'text-green-400') {
+            const output = document.getElementById('output');
+            output.innerHTML += `<div class="${color}">${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function convertGoogleDriveUrl(url, size = 'w800') {
+            if (!url || typeof url !== 'string' || url.trim() === '') return '';
+            url = url.trim();
+            if (!url.includes('drive.google.com')) return url;
+            if (url.includes('drive.google.com/thumbnail')) return url;
+            
+            let fileId = null;
+            const viewMatch = url.match(/\/file\/d\/([^\/]+)\/view/);
+            if (viewMatch && viewMatch[1]) {
+                fileId = viewMatch[1];
+            } else {
+                const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (openMatch && openMatch[1]) fileId = openMatch[1];
+            }
+            
+            if (fileId) {
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=${size}`;
+            }
+            return url;
+        }
+        
+        async function runDiagnostics() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="text-yellow-400 font-bold text-lg mb-4">🔍 RUNNING FULL DIAGNOSTICS...</div>';
+            
+            // Test 1: Check if we can access the main site
+            log('\n===== TEST 1: Checking Main Site Access =====', 'text-blue-400');
+            try {
+                const mainWindow = window.opener || (window.parent !== window ? window.parent : null);
+                if (mainWindow) {
+                    log('✅ Can access main window');
+                    log(`   - allGalleryImages: ${mainWindow.allGalleryImages?.length || 0} items`);
+                    log(`   - filteredGallery: ${mainWindow.filteredGallery?.length || 0} items`);
+                } else {
+                    log('⚠️ Cannot access main window - this tool must be opened from the main site', 'text-yellow-400');
+                }
+            } catch (e) {
+                log('❌ Error accessing main window: ' + e.message, 'text-red-400');
+            }
+            
+            // Test 2: Fetch data directly from API
+            log('\n===== TEST 2: Fetching Gallery Data from API =====', 'text-blue-400');
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=getGallery`);
+                const data = await response.json();
+                
+                log('✅ API Response received');
+                log(`   - Success: ${data.success}`);
+                log(`   - Gallery items: ${data.gallery?.length || 0}`);
+                
+                if (data.gallery && data.gallery.length > 0) {
+                    log('\n📊 Sample Data (first item):', 'text-cyan-400');
+                    const sample = data.gallery[0];
+                    log(`   ID: ${sample.id}`);
+                    log(`   Title: ${sample.title}`);
+                    log(`   Destination: ${sample.destination}`);
+                    log(`   Image URL Raw: ${sample.imageurl || sample.image || 'MISSING'}`);
+                    
+                    // Process the image URL
+                    const rawImages = (sample.imageurl || sample.image || '').split(',').map(u => u.trim()).filter(u => u);
+                    log(`   Images array: ${rawImages.length} images`);
+                    rawImages.forEach((url, i) => {
+                        const converted = convertGoogleDriveUrl(url);
+                        log(`     [${i+1}] ${url.substring(0, 50)}...`, 'text-gray-400');
+                        log(`         → ${converted}`, 'text-green-300');
+                    });
+                    
+                    // Test if first image loads
+                    log('\n===== TEST 3: Testing Image Load =====', 'text-blue-400');
+                    const testUrl = convertGoogleDriveUrl(rawImages[0]);
+                    const testImg = new Image();
+                    
+                    await new Promise((resolve) => {
+                        testImg.onload = function() {
+                            log(`✅ Image loaded successfully!`, 'text-green-400');
+                            log(`   - Dimensions: ${this.width}x${this.height}`);
+                            log(`   - URL: ${testUrl}`);
+                            
+                            // Show preview
+                            const preview = document.getElementById('preview');
+                            preview.innerHTML = `
+                                <div class="border-2 border-green-500 rounded-lg p-4">
+                                    <h3 class="font-bold text-lg mb-2">✅ Image Preview (loaded successfully):</h3>
+                                    <img src="${testUrl}" alt="Test" class="max-w-full h-auto rounded-lg shadow-lg">
+                                </div>
+                            `;
+                            resolve();
+                        };
+                        testImg.onerror = function() {
+                            log(`❌ Image FAILED to load!`, 'text-red-400');
+                            log(`   - URL: ${testUrl}`);
+                            log(`   - This URL is not accessible or invalid!`, 'text-red-400');
+                            resolve();
+                        };
+                        testImg.src = testUrl;
+                        
+                        // Timeout after 5 seconds
+                        setTimeout(() => {
+                            log(`⚠️ Image load timeout (5s)`, 'text-yellow-400');
+                            resolve();
+                        }, 5000);
+                    });
+                    
+                    // Store data globally for force fix
+                    window.galleryTestData = data.gallery;
+                    
+                } else {
+                    log('❌ No gallery data returned from API!', 'text-red-400');
+                }
+            } catch (error) {
+                log('❌ API Error: ' + error.message, 'text-red-400');
+            }
+            
+            // Test 4: Check main site DOM
+            log('\n===== TEST 4: Checking Main Site DOM =====', 'text-blue-400');
+            try {
+                const mainWindow = window.opener || window.parent;
+                if (mainWindow && mainWindow.document) {
+                    const galleryGrid = mainWindow.document.getElementById('gallery-grid');
+                    log(`   - Gallery grid exists: ${!!galleryGrid}`);
+                    if (galleryGrid) {
+                        log(`   - Grid innerHTML length: ${galleryGrid.innerHTML.length}`);
+                        log(`   - Gallery items in DOM: ${galleryGrid.querySelectorAll('.gallery-item').length}`);
+                        log(`   - Gallery images in DOM: ${galleryGrid.querySelectorAll('img').length}`);
+                    }
+                }
+            } catch (e) {
+                log('⚠️ Cannot check main site DOM (cross-origin or not opened from main site)', 'text-yellow-400');
+            }
+            
+            log('\n===== DIAGNOSTICS COMPLETE =====', 'text-green-400 font-bold text-lg');
+            log('\nℹ️ If images loaded in preview above, but don\'t show on main site, click "Force Gallery Fix"', 'text-cyan-400');
+        }
+        
+        async function forceGalleryFix() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="text-yellow-400 font-bold text-lg mb-4">🔧 FORCING GALLERY FIX...</div>';
+            
+            if (!window.galleryTestData) {
+                log('⚠️ No test data available. Run diagnostics first!', 'text-yellow-400');
+                return;
+            }
+            
+            log('Processing gallery data...', 'text-cyan-400');
+            
+            const processedGallery = window.galleryTestData.map(item => {
+                const images = (item.imageurl || item.image || '').split(',').map(url => url.trim()).filter(url => url);
+                const convertedImages = images.map(url => convertGoogleDriveUrl(url));
+                
+                return {
+                    id: item.id,
+                    title: item.title,
+                    destination: item.destination,
+                    tourType: item.tourtype || item.tourType,
+                    year: item.year,
+                    images: convertedImages,
+                    thumbnail: convertedImages[0] || '',
+                    description: item.description,
+                    clientName: item.clientname || item.clientName || item.title
+                };
+            });
+            
+            log(`✅ Processed ${processedGallery.length} gallery items`);
+            
+            // Try to inject into main window
+            try {
+                const mainWindow = window.opener || window.parent;
+                if (mainWindow && mainWindow.allGalleryImages !== undefined) {
+                    mainWindow.allGalleryImages = processedGallery;
+                    log('✅ Injected data into main window');
+                    
+                    if (typeof mainWindow.renderGallery === 'function') {
+                        mainWindow.renderGallery();
+                        log('✅ Called renderGallery()');
+                        log('\n🎉 FIX APPLIED! Check your main site gallery now!', 'text-green-400 font-bold text-xl');
+                    } else {
+                        log('❌ renderGallery() function not found in main window', 'text-red-400');
+                    }
+                } else {
+                    log('❌ Cannot access main window. Open this tool from the main site.', 'text-red-400');
+                }
+            } catch (e) {
+                log('❌ Error applying fix: ' + e.message, 'text-red-400');
+            }
+            
+            // Show preview of what SHOULD appear
+            log('\n===== PREVIEW OF GALLERY HTML =====', 'text-blue-400');
+            const html = processedGallery.map(img => `
+                <div class="gallery-item" onclick="alert('Would open modal for: ${img.title}')">
+                    <img src="${img.thumbnail}" alt="${img.title}" loading="lazy">
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">${img.title}</div>
+                        <div class="gallery-item-meta">${img.destination} • ${img.year}</div>
+                        ${img.images && img.images.length > 1 ? `<div class="gallery-item-count">${img.images.length} photos</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <div class="mt-6">
+                    <h3 class="font-bold text-xl mb-4">Gallery Preview (what should appear on main site):</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        ${html}
+                    </div>
+                </div>
+                <style>
+                    .gallery-item {
+                        position: relative;
+                        overflow: hidden;
+                        border-radius: 0.75rem;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        transition: transform 0.3s, box-shadow 0.3s;
+                        cursor: pointer;
+                        aspect-ratio: 4/3;
+                    }
+                    .gallery-item:hover {
+                        transform: translateY(-4px);
+                        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+                    }
+                    .gallery-item img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.3s;
+                    }
+                    .gallery-item:hover img {
+                        transform: scale(1.05);
+                    }
+                    .gallery-item-overlay {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+                        padding: 1.5rem;
+                        color: white;
+                    }
+                    .gallery-item-title {
+                        font-weight: 600;
+                        margin-bottom: 0.25rem;
+                    }
+                    .gallery-item-meta {
+                        font-size: 0.875rem;
+                        opacity: 0.9;
+                    }
+                    .gallery-item-count {
+                        font-size: 0.75rem;
+                        margin-top: 0.25rem;
+                        background: rgba(255, 255, 255, 0.2);
+                        padding: 0.25rem 0.5rem;
+                        border-radius: 0.25rem;
+                        width: fit-content;
+                    }
+                </style>
+            `;
+        }
+        
+        function clearEverything() {
+            if (confirm('This will clear all cache and reload the page. Continue?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                log('✅ Cache cleared!', 'text-green-400');
+                
+                try {
+                    const mainWindow = window.opener || window.parent;
+                    if (mainWindow) {
+                        mainWindow.location.reload(true);
+                        log('✅ Main window reloaded!', 'text-green-400');
+                    }
+                } catch (e) {
+                    log('❌ Could not reload main window: ' + e.message, 'text-red-400');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
