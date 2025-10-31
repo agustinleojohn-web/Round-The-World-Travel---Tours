@@ -6,7 +6,7 @@
     
     <!-- Homepage -->
     <url>
-        <loc>https://roundtheworld.free.nf/</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
@@ -14,7 +14,7 @@
     
     <!-- Main Page (index.html) -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
@@ -22,7 +22,7 @@
     
     <!-- Hero Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#hero</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#hero</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -30,7 +30,7 @@
     
     <!-- Services Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#services</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#services</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -38,7 +38,7 @@
     
     <!-- Packages Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#packages</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#packages</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
@@ -46,7 +46,7 @@
     
     <!-- About Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#about</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#about</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -54,7 +54,7 @@
 
 <!-- Services Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#services</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#services</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -62,7 +62,7 @@
     
 <!-- Galley Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#gallery</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#gallery</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -70,7 +70,7 @@
 
     <!-- Testimonials Section -->
     <url>
-        <loc>https://roundtheworld.free.nfm/index.html#testimonials</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#testimonials</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
@@ -78,7 +78,7 @@
     
     <!-- Contact Section -->
     <url>
-        <loc>https://roundtheworld.free.nf/index.html#contact</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/index.html#contact</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -86,7 +86,7 @@
     
     <!-- Privacy Policy -->
     <url>
-        <loc>https://roundtheworld.free.nf/privacy-policy.html</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/privacy-policy.html</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
@@ -94,7 +94,7 @@
     
     <!-- Terms of Service -->
     <url>
-        <loc>https://roundtheworld.free.nf/terms-of-service.html</loc>
+        <loc>https://agustinleojohn-web.github.io/Round-The-World-Travel---Tours/terms-of-service.html</loc>
         <lastmod>2025-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
